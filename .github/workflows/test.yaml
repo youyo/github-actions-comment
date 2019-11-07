@@ -16,4 +16,7 @@ jobs:
         env:
           TEST_MESSAGE: 'test-message'
         run: |
-          ./ghc --title 'Test' --body `env`
+          ./ghc --title 'Test' --body `w`
+          ./ghc --title 'Test' --body `id`
+          ./ghc --title 'Test' --body `pwd`
+          ./ghc --title 'Test' --body `ls -l`
