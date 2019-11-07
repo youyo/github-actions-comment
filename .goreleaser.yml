@@ -4,6 +4,7 @@ before:
 
 builds:
   - main: ./ghc/main.go
+    binary: ghc
     env:
       - CGO_ENABLED=0
     ldflags:
