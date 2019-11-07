@@ -14,5 +14,5 @@ jobs:
           chmod +x ghc
       - name: Execute
         run: |
-          cat /github/workflow/event.json
+          cat ${GITHUB_EVENT_PATH}
           ./ghc --title 'Test' --body 'test-message'
