@@ -22,7 +22,12 @@ func Run(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	err = g.PostComment(comment)
+	requestBody, err := g.CreateRequestBody(comment)
+	if err != nil {
+		return err
+	}
+
+	err = g.Post(requestBody)
 
 	return err
 }
