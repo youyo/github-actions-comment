@@ -10,12 +10,8 @@ jobs:
     steps:
       - name: Setup
         run: |
-          curl -sL https://github.com/youyo/github-actions-comment/releases/download/v0.1.0/ghc_0.1.0_Linux_x86_64 -o ghc
+          curl -sL https://github.com/youyo/github-actions-comment/releases/download/v0.1.1/ghc_0.1.1_Linux_x86_64 -o ghc
           chmod +x ghc
       - name: Execute
-        env:
-          URL: ${{ github.event.pull_request.comments_url }}
         run: |
-          echo ${URL} > aaa
-          cat aaa
-          ./ghc --title 'Test' --body 'test-message'
+          ./ghc --title 'Test' --body `env`
