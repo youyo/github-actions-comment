@@ -2,9 +2,11 @@ package ghc
 
 import (
 	"bytes"
+	"encoding/json"
 	"html/template"
 	"net/http"
 	"os"
+	"strings"
 
 	pipeline "github.com/mattn/go-pipeline"
 )
@@ -30,7 +32,7 @@ const Template string = "#### `{{.Title}}` `{{.Status}}`" + `
 
 </details>
 
-` + "*Workflow: `{{.Workflow}}`, Action: `{{.Action}}*"
+` + "*Workflow: `{{.Workflow}}`, Action: `{{.Action}}`*"
 
 const (
 	Success bool = true
@@ -63,17 +65,17 @@ func (g *Ghc) GetCommentUrl() error {
 	return nil
 }
 
-func (g *Ghc) GenerateComment(title, body string, status bool) (*bytes.Buffer, error) {
-	tmpl, err := template.New("test").Parse(Template)
+func (g *Ghc) GenerateComment(title, body string, failure bool) (*bytes.Buffer, error) {
+	tmpl, err := template.New("comment").Parse(Template)
 	if err != nil {
 		return nil, err
 	}
 
 	var result string
-	if status {
-		result = "Success"
-	} else {
+	if failure {
 		result = "Failure"
+	} else {
+		result = "Success"
 	}
 
 	params := map[string]string{
@@ -84,16 +86,29 @@ func (g *Ghc) GenerateComment(title, body string, status bool) (*bytes.Buffer, e
 		"Action":   g.Action,
 	}
 
-	var comment *bytes.Buffer
-	if err := tmpl.Execute(comment, params); err != nil {
+	var comment bytes.Buffer
+	if err := tmpl.Execute(&comment, params); err != nil {
 		return nil, err
 	}
 
-	return comment, nil
+	return &comment, nil
 }
 
-func (g *Ghc) PostComment(comment *bytes.Buffer) error {
-	req, err := http.NewRequest("POST", g.Url, comment)
+func (g *Ghc) CreateRequestBody(comment *bytes.Buffer) ([]byte, error) {
+	body := map[string]string{
+		"body": comment.String(),
+	}
+
+	requestBody, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+
+	return requestBody, nil
+}
+
+func (g *Ghc) Post(requestBody []byte) error {
+	req, err := http.NewRequest("POST", g.Url, bytes.NewBuffer(requestBody))
 	if err != nil {
 		return err
 	}
@@ -121,7 +136,7 @@ func getCommentUrl(filepath string) (string, error) {
 		return "", err
 	}
 
-	output := string(out)
+	output := strings.Replace(string(out), "\n", "", -1)
 
 	return output, nil
 }
