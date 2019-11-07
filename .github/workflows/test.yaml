@@ -16,9 +16,6 @@ jobs:
         env:
           TEST_MESSAGE: 'test-message'
         run: |
-          ./ghc --title 'Test' --body `w`
-          ./ghc --title 'Test' --body `id`
-          ./ghc --title 'Test' --body `pwd`
-          ./ghc --title 'Test' --body `ls`
           LIST=`echo "100\n200\n300"`
           ./ghc --title 'Test' --body ${LIST}
+          ./ghc --title 'Test' --body failed --failure
