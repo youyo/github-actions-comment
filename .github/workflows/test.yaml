@@ -19,4 +19,6 @@ jobs:
           ./ghc --title 'Test' --body `w`
           ./ghc --title 'Test' --body `id`
           ./ghc --title 'Test' --body `pwd`
-          ./ghc --title 'Test' --body `ls -l`
+          ./ghc --title 'Test' --body `ls`
+          echo "100\n200\n300" > text
+          ./ghc --title 'Test' --body `cat text`
