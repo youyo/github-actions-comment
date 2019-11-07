@@ -13,5 +13,7 @@ jobs:
           curl -sL https://github.com/youyo/github-actions-comment/releases/download/v0.1.1/ghc_0.1.1_Linux_x86_64 -o ghc
           chmod +x ghc
       - name: Execute
+        env:
+          TEST_MESSAGE: 'test-message'
         run: |
           ./ghc --title 'Test' --body `env`
